@@ -2,7 +2,7 @@ import GeneticAlgorithm from "tournament-selection-genetic-algorithm";
 
 export default class MelodyFactory {
     /**
-     * Construct the factory.
+     * Construct the factory!
      */
     constructor(settings = {}) {
         const defaults = this.getDefaultSettings();
