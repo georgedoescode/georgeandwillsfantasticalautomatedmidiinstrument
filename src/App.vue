@@ -1,5 +1,5 @@
 <template>
-    <p>georgeandwillsfantasticalautomatedmidisystem</p>
+    <p>georgeandwillsfantasticalautomatedmidiinstrument</p>
 </template>
 
 <script>
