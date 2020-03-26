@@ -25,7 +25,9 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "normalize.css": "^8.0.1",
     "tournament-selection-genetic-algorithm": "^0.2.2",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "webmidi": "^2.5.1"
   }
 }
