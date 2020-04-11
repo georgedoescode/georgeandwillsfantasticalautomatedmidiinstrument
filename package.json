@@ -1,33 +1,37 @@
 {
-  "name": "midifunvue",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "build": "webpack --mode production",
-    "dev": "webpack-dev-server --hot --mode development"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "babel-loader": "^8.1.0",
-    "css-loader": "^3.4.2",
-    "html-webpack-plugin": "^4.0.2",
-    "mini-css-extract-plugin": "^0.9.0",
-    "vue-loader": "^15.9.1",
-    "vue-style-loader": "^4.1.2",
-    "vue-template-compiler": "^2.6.11",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
-  },
-  "dependencies": {
-    "normalize.css": "^8.0.1",
-    "tournament-selection-genetic-algorithm": "^0.2.2",
-    "vue": "^2.6.11",
-    "webmidi": "^2.5.1"
-  }
+    "name": "midifunvue",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "build": "webpack --mode production",
+        "dev": "webpack-dev-server --mode development"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.9.0",
+        "@babel/preset-env": "^7.9.0",
+        "babel-loader": "^8.1.0",
+        "css-loader": "^3.4.2",
+        "html-webpack-plugin": "^4.0.2",
+        "mini-css-extract-plugin": "^0.9.0",
+        "vue-loader": "^15.9.1",
+        "vue-style-loader": "^4.1.2",
+        "vue-template-compiler": "^2.6.11",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.10.3"
+    },
+    "dependencies": {
+        "@tonaljs/tonal": "^3.6.0",
+        "chart.js": "^2.9.3",
+        "normalize.css": "^8.0.1",
+        "tournament-selection-genetic-algorithm": "^0.2.2",
+        "vue": "^2.6.11",
+        "vue-chartjs": "^3.5.0",
+        "vue-select": "^3.9.5",
+        "webmidi": "^2.5.1"
+    }
 }
