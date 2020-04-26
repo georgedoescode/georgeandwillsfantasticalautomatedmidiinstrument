@@ -10,6 +10,9 @@ export default new Vuex.Store({
     mutations: {
         progressTransport(state) {
             state.transportPosition++;
+        },
+        resetTransport(state) {
+            state.transportPosition = 0;
         }
     },
     actions: {},

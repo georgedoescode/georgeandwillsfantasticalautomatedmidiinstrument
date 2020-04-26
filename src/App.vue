@@ -22,7 +22,9 @@
                     fitnessFunction: this.willsGloriousFitnessFunction // The creative bit
                 },
                 melodyFactory: null,
-                currentNote: 0
+                currentNote: 0,
+                melody: null,
+                output: null
             };
         },
 
@@ -30,28 +32,24 @@
             transportPosition(currentValue) {
                 // MIDI clocks emit 24 pulses per quarter note at n tempo
                 if (currentValue % 24 === 0) {
-                    console.log("play note here");
+                    if (this.melody.length === 0 || !this.melody) return;
+                    const value = this.melody.shift();
+                    const note = value === 0 ? 0 : value + 60; // If 0 dont play
+                    console.log(note);
+                    this.currentNote = note;
+                    this.output.playNote(note);
                 }
             }
         },
 
-        mounted: function() {
+        beforeCreate: function() {
             this.transport = new Transport(this.$store, "Georges MIDI Bus 1");
             this.melodyFactory = new MelodyFactory(this.settings);
             const melodies = this.melodyFactory.createMelodies();
             console.log("WILL", melodies);
             webmidi.enable(err => {
-                const output = webmidi.outputs[0];
-                console.log(webmidi);
-                const melody = melodies.reduce((a, m) => a.concat(m), []);
-                const interval = setInterval(() => {
-                    if (melody.length === 0) clearInterval(interval);
-                    const value = melody.shift();
-                    const note = value === 0 ? 0 : value + 60; // If 0 dont play
-                    console.log(note);
-                    this.currentNote = note;
-                    output.playNote(note);
-                }, 250);
+                this.output = webmidi.outputs[0];
+                this.melody = melodies.reduce((a, m) => a.concat(m), []);
             });
         },
         methods: {

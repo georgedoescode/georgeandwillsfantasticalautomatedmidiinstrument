@@ -18,10 +18,16 @@ export default class {
             }
         }
 
-        this.MIDIInput.onmidimessage = e => this.onMIDIClockTick(e);
+        this.MIDIInput.onmidimessage = e => this.onMIDIClockMessage(e);
     }
 
-    onMIDIClockTick(e) {
+    onMIDIClockMessage(e) {
+        // "stop" message value is 252
+        if (e.data[0] === 252) {
+            this.store.commit("resetTransport");
+            return;
+        }
+        // "clock" message value is 248
         if (e.data[0] === 248) {
             this.store.commit("progressTransport");
         }
