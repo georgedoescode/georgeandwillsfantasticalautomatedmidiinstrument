@@ -1,5 +1,6 @@
 <template>
     <div>
+        {{ transportPosition + "ff" }}
         <p>georgeandwillsfantasticalautomatedmidiinstrument</p>
         <p>current note: {{ currentNote }}</p>
     </div>
@@ -7,6 +8,7 @@
 
 <script>
     import MelodyFactory from "./classes/MelodyFactory";
+    import Transport from "./classes/Transport";
     import webmidi from "webmidi";
 
     export default {
@@ -24,7 +26,15 @@
             };
         },
 
+        watch: {
+            transportPosition(currentValue) {
+                if (currentValue % 24 === 0) {
+                }
+            }
+        },
+
         mounted: function() {
+            this.transport = new Transport(this.$store, "Georges MIDI Bus 1");
             this.melodyFactory = new MelodyFactory(this.settings);
             const melodies = this.melodyFactory.createMelodies();
             console.log("WILL", melodies);
@@ -90,6 +100,11 @@
                 score -= Math.abs(idealZeroCount - zeroCount);
 
                 return score;
+            }
+        },
+        computed: {
+            transportPosition() {
+                return this.$store.state.transportPosition;
             }
         }
     };
