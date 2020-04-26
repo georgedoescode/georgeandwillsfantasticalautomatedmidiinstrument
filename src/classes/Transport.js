@@ -25,8 +25,8 @@ export default class {
         // "stop" message value is 252
         if (e.data[0] === 252) {
             this.store.commit("resetTransport");
-            return;
         }
+
         // "clock" message value is 248
         if (e.data[0] === 248) {
             this.store.commit("progressTransport");
