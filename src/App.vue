@@ -1,6 +1,6 @@
 <template>
     <div>
-        {{ transportPosition + "ff" }}
+        {{ "Transport position: " + transportPosition }}
         <p>georgeandwillsfantasticalautomatedmidiinstrument</p>
         <p>current note: {{ currentNote }}</p>
     </div>
@@ -28,7 +28,9 @@
 
         watch: {
             transportPosition(currentValue) {
+                // MIDI clocks emit 24 pulses per quarter note at n tempo
                 if (currentValue % 24 === 0) {
+                    console.log("play note here");
                 }
             }
         },
