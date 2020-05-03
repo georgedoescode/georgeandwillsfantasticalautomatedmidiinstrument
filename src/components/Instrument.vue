@@ -20,6 +20,10 @@
             <p v-if="playing">{{ currentNoteLabel }}</p>
         </div>
         <NoteCollection @update="setNotes" />
+        <codemirror
+            :value="fitnessFunctionString"
+            @input="updateFitnessFunction"
+        ></codemirror>
     </div>
 </template>
 
@@ -27,6 +31,9 @@
     import NoteCollection from "./NoteCollection.vue";
     import MelodyVisualisation from "./MelodyVisualisation.vue";
     import MelodyFactory from "../classes/MelodyFactory";
+    import MelodyOne from "../fitness-functions/melody-one";
+    import VueCodemirror from "vue-codemirror";
+    import "codemirror/lib/codemirror.css";
     import { Midi } from "@tonaljs/tonal";
     import webmidi from "webmidi";
 
@@ -34,9 +41,11 @@
         data: function() {
             return {
                 melodyFactory: null,
+                fitnessFunction: MelodyOne,
                 notes: [],
                 noteStream: [],
                 streamInterval: null,
+                currentNoteIndex: 0,
                 currentNote: 0,
                 playing: false,
                 loop: true,
@@ -53,6 +62,9 @@
             this.generateMelodies();
         },
         computed: {
+            fitnessFunctionString: function() {
+                return this.fitnessFunction.toString();
+            },
             currentNoteLabel: function() {
                 return Midi.midiToNoteName(this.currentNote);
             },
@@ -62,40 +74,47 @@
                     geneValues: this.notes, // 'Notes' available
                     populationCount: 8, // How many melodies to create
                     generationCount: 10, // How much to breed (develop) them
-                    fitnessFunction: this.willsGloriousFitnessFunction // The creative bit
+                    fitnessFunction: this.fitnessFunction // The creative bit
                 };
             }
         },
         methods: {
+            updateFitnessFunction: function(fnc) {
+                console.log("updateFitnessFunction");
+                try {
+                    eval("this.fitnessFunction = " + fnc);
+                    this.generateMelodies();
+                } catch (e) {
+                    console.warn("Error updating fitness function.", e);
+                }
+            },
             setNotes: function(notes) {
-                console.log("setNotes", notes);
                 this.notes = notes.map(n => Midi.toMidi(n));
             },
             generateMelodies: function() {
-                console.log("generateMelodies", this.settings);
+                console.log("fitness function", this.settings.fitnessFunction);
                 this.melodyFactory = new MelodyFactory(this.settings);
                 const melodies = this.melodyFactory.createMelodies();
                 this.noteStream = melodies.reduce((a, m) => a.concat(m), []);
-                this.visualisationKey = Math.random(); // Horrible hack
-                console.log("new note stream", this.noteStream);
+                console.log("this.noteStream", this.noteStream);
+                this.visualisationKey = Math.random(); // Horrible hack to refresh the visualisation
             },
             start: function() {
                 this.playing = true;
                 webmidi.enable(err => {
                     const output = webmidi.outputs[0];
                     console.log(webmidi);
-                    let melody = this.noteStream.slice();
                     this.streamInterval = setInterval(() => {
-                        if (melody.length === 0) {
-                            if (loop) {
-                                melody = this.noteStream.slice();
-                            } else {
-                                clearInterval(interval);
-                            }
+                        if (
+                            this.currentNoteIndex >
+                            this.noteStream.length - 1
+                        ) {
+                            this.currentNoteIndex = 0;
                         }
-                        const value = melody.shift();
+
+                        this.currentNoteIndex++;
+                        const value = this.noteStream[this.currentNoteIndex];
                         const note = value === 0 ? 0 : value; // If 0 dont play
-                        console.log(note);
                         this.currentNote = note;
                         output.playNote(note);
                     }, 60000 / (this.tempo * this.notesPerBar));
@@ -106,54 +125,7 @@
                 clearInterval(this.streamInterval);
                 this.streamInterval = null;
                 this.playing = false;
-            },
-            /**
-             * Assess the gene passed into the function by
-             * building up a score based on certain aspects
-             * of the gene and returning this score for the
-             * genetic algorithm to use to breed 'better' melodies.
-             */
-            willsGloriousFitnessFunction: function(gene) {
-                let score = 0;
-                if (gene[0] !== 0) score++;
-
-                if (gene[0] === this.settings.geneValues[1]) score++;
-
-                if (
-                    [
-                        this.settings.geneValues[1],
-                        this.settings.geneValues[3],
-                        this.settings.geneValues[5]
-                    ].indexOf(gene[4]) !== -1
-                )
-                    score++;
-
-                if (
-                    [
-                        this.settings.geneValues[1],
-                        this.settings.geneValues[3],
-                        this.settings.geneValues[5]
-                    ].indexOf(gene[8]) !== -1
-                )
-                    score++;
-
-                if (
-                    [
-                        this.settings.geneValues[1],
-                        this.settings.geneValues[3],
-                        this.settings.geneValues[5]
-                    ].indexOf(gene[12]) !== -1
-                )
-                    score++;
-
-                const idealZeroCount = 8;
-                const zeroCount = gene.reduce(
-                    (a, v) => a + (!!(v == 0) ? 1 : 0),
-                    0
-                );
-                score -= Math.abs(idealZeroCount - zeroCount);
-
-                return score;
+                this.currentNoteIndex = 0;
             }
         }
     };
@@ -162,6 +134,7 @@
 <style>
     body {
         height: 100vh;
+        overflow: scroll;
         display: flex;
         justify-content: center;
         align-items: center;

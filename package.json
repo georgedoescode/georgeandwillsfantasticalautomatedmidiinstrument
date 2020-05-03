@@ -31,6 +31,7 @@
         "tournament-selection-genetic-algorithm": "^0.2.2",
         "vue": "^2.6.11",
         "vue-chartjs": "^3.5.0",
+        "vue-codemirror": "^4.0.6",
         "vue-select": "^3.9.5",
         "webmidi": "^2.5.1"
     }
