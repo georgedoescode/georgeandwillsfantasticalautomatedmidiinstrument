@@ -1,6 +1,7 @@
 <template>
     <div>
         <Instrument />
+        <button @click="addInstrument">Add</button>
     </div>
 </template>
 
@@ -10,6 +11,19 @@
     export default {
         components: {
             Instrument
+        },
+        data: function() {
+            return {
+                instrumentCount: 1
+            };
+        },
+        computed: {
+            instruments: function() {}
+        },
+        methods: {
+            addInstrument: function() {
+                this.instrumentCount++;
+            }
         }
     };
 </script>
