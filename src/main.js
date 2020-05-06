@@ -8,6 +8,7 @@ import App from "./App.vue";
 import Vue from "vue";
 import vSelect from "vue-select";
 import VueCodemirror from "vue-codemirror";
+import store from "./store";
 
 Vue.component("v-select", vSelect);
 
@@ -21,5 +22,6 @@ Vue.use(VueCodemirror, {
 
 new Vue({
     el: "#app",
+    store,
     render: h => h(App)
 });
