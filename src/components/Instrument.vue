@@ -32,6 +32,7 @@
     import MelodyVisualisation from "./MelodyVisualisation.vue";
     import MelodyFactory from "../classes/MelodyFactory";
     import MelodyOne from "../fitness-functions/melody-one";
+    import MelodyTwo from "../fitness-functions/melody-two";
     import VueCodemirror from "vue-codemirror";
     import "codemirror/lib/codemirror.css";
     import { Midi } from "@tonaljs/tonal";
@@ -41,7 +42,7 @@
         data: function() {
             return {
                 melodyFactory: null,
-                fitnessFunction: MelodyOne,
+                fitnessFunction: MelodyTwo,
                 notes: [],
                 noteStream: [],
                 streamInterval: null,
@@ -71,9 +72,9 @@
             settings: function() {
                 return {
                     geneLength: 16, // Amount of notes in a melody
-                    geneValues: this.notes, // 'Notes' available
-                    populationCount: 8, // How many melodies to create
-                    generationCount: 10, // How much to breed (develop) them
+                    geneValues: this.notes.concat([0]), // 'Notes' available
+                    populationCount: 16, // How many melodies to create
+                    generationCount: 100, // How much to breed (develop) them
                     fitnessFunction: this.fitnessFunction // The creative bit
                 };
             }

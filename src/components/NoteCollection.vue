@@ -22,9 +22,9 @@
     export default {
         data: function() {
             return {
-                scale: "major pentatonic",
-                baseNote: "c5",
-                octaveCount: 2
+                scale: "aeolian",
+                baseNote: "d3",
+                octaveCount: 3
             };
         },
         watch: {
@@ -41,9 +41,14 @@
                 let notes = [];
                 for (let i = 0; i < this.octaveCount; i++) {
                     notes = notes.concat(
-                        scale.notes.map(n =>
-                            Note.transpose(n, Interval.fromSemitones(i * 12))
-                        )
+                        scale.notes.map(n => {
+                            let note = Note.transpose(
+                                n,
+                                Interval.fromSemitones(i * 12)
+                            );
+                            //note.info = Note.get(n);
+                            return note;
+                        })
                     );
                 }
                 console.log("notes", notes);
