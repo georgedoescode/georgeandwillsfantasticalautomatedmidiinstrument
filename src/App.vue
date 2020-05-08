@@ -10,7 +10,7 @@
 
 <script>
     import Instrument from "./components/Instrument.vue";
-    import Transport from "./classes/Transport";
+    //import Transport from "./classes/Transport";
 
     export default {
         components: {
@@ -24,25 +24,25 @@
         computed: {
             instruments: function() {},
             transportPosition() {
-                return this.$store.state.transportPosition;
+                return 0; //this.$store.state.transportPosition;
             }
         },
         watch: {
-            transportPosition(pulse) {
-                // midi clocks pulse 24x per quater note
-                if (pulse % 24 === 0) {
-                    console.log("quater note niceeeee");
-                }
-            }
+            // transportPosition(pulse) {
+            //     // midi clocks pulse 24x per quater note
+            //     if (pulse % 24 === 0) {
+            //         console.log("quater note niceeeee");
+            //     }
+            // }
         },
         methods: {
             addInstrument: function() {
                 this.instrumentCount++;
             }
-        },
-        beforeCreate() {
-            this.transport = new Transport(this.$store, "Georges MIDI Bus 1");
         }
+        // beforeCreate() {
+        //     this.transport = new Transport(this.$store, "Georges MIDI Bus 1");
+        // }
     };
 </script>
 

@@ -42,7 +42,7 @@
         data: function() {
             return {
                 melodyFactory: null,
-                fitnessFunction: MelodyTwo,
+                fitnessFunction: MelodyOne,
                 notes: [],
                 noteStream: [],
                 streamInterval: null,

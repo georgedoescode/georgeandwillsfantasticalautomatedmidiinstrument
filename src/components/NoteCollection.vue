@@ -23,7 +23,7 @@
         data: function() {
             return {
                 scale: "aeolian",
-                baseNote: "d3",
+                baseNote: "d4",
                 octaveCount: 3
             };
         },
