@@ -10,6 +10,9 @@ module.exports = (env, argv) => {
             Webpack will use the as the base for everything (css imported here etc)
         */
         entry: "./src/main.js",
+        optimization: {
+            minimize: false
+        },
         output: {
             path: path.join(__dirname, "dist"),
             filename: "[name].bundle.js"
