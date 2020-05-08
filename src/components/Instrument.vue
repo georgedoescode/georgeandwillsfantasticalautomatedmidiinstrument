@@ -90,6 +90,7 @@
             },
             setNotes: function(notes) {
                 this.notes = notes.map(n => Midi.toMidi(n));
+                this.generateMelodies();
             },
             generateMelodies: function() {
                 console.log("fitness function", this.settings.fitnessFunction);
@@ -113,10 +114,17 @@
                         }
 
                         this.currentNoteIndex++;
-                        const value = this.noteStream[this.currentNoteIndex];
-                        const note = value === 0 ? 0 : value; // If 0 dont play
-                        this.currentNote = note;
-                        output.playNote(note);
+                        const note = this.noteStream[this.currentNoteIndex];
+
+                        // If note isn't 0 and isn't the same as the previous note
+                        if (
+                            note !== 0 &&
+                            this.noteStream[this.currentNoteIndex - 1] &&
+                            note !== this.noteStream[this.currentNoteIndex - 1]
+                        ) {
+                            this.currentNote = note;
+                            output.playNote(note);
+                        }
                     }, 60000 / (this.tempo * this.notesPerBar));
                 });
             },

@@ -32,6 +32,7 @@ export default class MelodyFactory {
             this.settings.fitnessFunction(g, this.settings.geneValues);
         // Run the genetic algorithm to produce the melodies
         ga.run(this.settings.populationCount, this.settings.generationCount);
+        console.log('population', ga.population);
         // Return the melodies
         return ga.population;
     }

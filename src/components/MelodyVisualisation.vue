@@ -60,7 +60,7 @@
                             borderColor: "#f87979",
                             backgroundColor: "#f87979",
                             data: this.melody.map((v, i) => {
-                                return { x: i, y: v };
+                                if (v !== 0) return { x: i, y: v };
                             })
                         }
                     ]
