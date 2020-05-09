@@ -51,7 +51,7 @@
                 playing: false,
                 loop: true,
                 tempo: 120,
-                notesPerBar: 1,
+                notesPerBar: 4,
                 visualisationKey: Math.random()
             };
         },
@@ -123,7 +123,10 @@
                             this.noteStream[this.currentNoteIndex - 1] &&
                             note !== this.noteStream[this.currentNoteIndex - 1]
                         ) {
+                            if (this.currentNote)
+                                output.stopNote(this.currentNote);
                             this.currentNote = note;
+                            console.log("Playing", note);
                             output.playNote(note);
                         }
                     }, 60000 / (this.tempo * this.notesPerBar));

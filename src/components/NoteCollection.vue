@@ -38,10 +38,12 @@
         computed: {
             notes: function() {
                 const scale = Scale.get(`${this.baseNote} ${this.scale}`);
+                console.log(scale);
                 let notes = [];
                 for (let i = 0; i < this.octaveCount; i++) {
                     notes = notes.concat(
                         scale.notes.map(n => {
+                            console.log(Note.get(n));
                             let note = Note.transpose(
                                 n,
                                 Interval.fromSemitones(i * 12)
