@@ -139,7 +139,8 @@
 <style scoped>
     .instrument {
         position: relative;
-        max-width: 768px;
+        width: 768px;
+
         padding: 32px 24px;
         background: #fff;
         border-radius: 16px;
