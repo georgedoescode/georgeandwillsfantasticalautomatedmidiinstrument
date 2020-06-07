@@ -42,22 +42,18 @@
                 return Scale.get(`${this.baseNote} ${this.scaleName}`);
             },
             notes: function() {
-                // console.log(this.scale);
+                const middleOctave = ~~this.baseNote.match(/\d+/)[0];
+                const startOctave =
+                    middleOctave - Math.floor(this.octaveCount / 2);
+                const baseNotes = this.scale.notes.map(n => n.match(/\D+/)[0]);
                 let notes = [];
-                for (let i = 0; i < this.octaveCount; i++) {
-                    notes = notes.concat(
-                        this.scale.notes.map(n => {
-                            // console.log(Note.get(n));
-                            let note = Note.transpose(
-                                n,
-                                Interval.fromSemitones(i * 12)
-                            );
-                            //note.info = Note.get(n);
-                            return note;
-                        })
-                    );
+                for (
+                    let o = startOctave;
+                    o < startOctave + this.octaveCount;
+                    o++
+                ) {
+                    notes = notes.concat(baseNotes.map(n => Note.get(n + o)));
                 }
-                // console.log("notes", notes);
                 return notes;
             },
             scales: function() {
@@ -69,7 +65,6 @@
         },
         methods: {
             emitUpdate: function() {
-                // console.log("emitUpdate", this.notes);
                 this.$emit("update", { notes: this.notes, scale: this.scale });
             }
         }
