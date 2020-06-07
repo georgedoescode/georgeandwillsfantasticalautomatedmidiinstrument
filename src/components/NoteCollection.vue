@@ -3,7 +3,7 @@
         <p>Note Collection</p>
         <div>
             <span>Scale:</span>
-            <v-select label="scale" :options="scales" v-model="scale" />
+            <v-select label="scale" :options="scales" v-model="scaleName" />
         </div>
         <div>
             <span>Base note:</span>
@@ -22,7 +22,7 @@
     export default {
         data: function() {
             return {
-                scale: "aeolian",
+                scaleName: "aeolian",
                 baseNote: "d4",
                 octaveCount: 3
             };
@@ -36,13 +36,15 @@
             this.emitUpdate();
         },
         computed: {
+            scale: function() {
+                return Scale.get(`${this.baseNote} ${this.scaleName}`);
+            },
             notes: function() {
-                const scale = Scale.get(`${this.baseNote} ${this.scale}`);
-                console.log(scale);
+                // console.log(this.scale);
                 let notes = [];
                 for (let i = 0; i < this.octaveCount; i++) {
                     notes = notes.concat(
-                        scale.notes.map(n => {
+                        this.scale.notes.map(n => {
                             console.log(Note.get(n));
                             let note = Note.transpose(
                                 n,
@@ -66,7 +68,7 @@
         methods: {
             emitUpdate: function() {
                 console.log("emitUpdate", this.notes);
-                this.$emit("update", this.notes);
+                this.$emit("update", { notes: this.notes, scale: this.scale });
             }
         }
     };

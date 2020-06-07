@@ -10,14 +10,10 @@
             />
         </div>
         <div>
-            <button v-if="!playing" @click="start">Play</button>
-            <button v-if="playing" @click="stop">Stop</button>
-        </div>
-        <div>
             <button @click="generateMelodies">Regenerate</button>
         </div>
         <div>
-            <p v-if="playing">{{ currentNoteLabel }}</p>
+            <p>{{ currentNoteLabel }}</p>
         </div>
         <NoteCollection @update="setNotes" />
         <codemirror
@@ -36,9 +32,11 @@
     import VueCodemirror from "vue-codemirror";
     import "codemirror/lib/codemirror.css";
     import { Midi } from "@tonaljs/tonal";
-    import webmidi from "webmidi";
 
     export default {
+        props: {
+            output: { required: true }
+        },
         data: function() {
             return {
                 melodyFactory: null,
@@ -46,12 +44,8 @@
                 notes: [],
                 noteStream: [],
                 streamInterval: null,
-                currentNoteIndex: 0,
                 currentNote: 0,
-                playing: false,
-                loop: true,
-                tempo: 120,
-                notesPerBar: 4,
+                scale: null,
                 visualisationKey: Math.random()
             };
         },
@@ -75,13 +69,25 @@
                     geneValues: this.notes.concat([0]), // 'Notes' available
                     populationCount: 16, // How many melodies to create
                     generationCount: 100, // How much to breed (develop) them
-                    fitnessFunction: this.fitnessFunction // The creative bit
+                    fitnessFunction: this.fitnessFunction, // The creative bit
+                    scale: this.scale
                 };
+            },
+            conductor() {
+                return this.$store.state.transportPosition;
+            }
+        },
+        watch: {
+            conductor(pulse) {
+                // midi clocks pulse 24x per quater note
+                if (pulse % 24 === 0) {
+                    console.log("quarter note niceeeee");
+                    this.play(pulse);
+                }
             }
         },
         methods: {
             updateFitnessFunction: function(fnc) {
-                console.log("updateFitnessFunction");
                 try {
                     eval("this.fitnessFunction = " + fnc);
                     this.generateMelodies();
@@ -89,55 +95,30 @@
                     console.warn("Error updating fitness function.", e);
                 }
             },
-            setNotes: function(notes) {
-                this.notes = notes.map(n => Midi.toMidi(n));
+            setNotes: function(e) {
+                this.notes = e.notes.map(n => Midi.toMidi(n));
+                this.scale = e.scale;
                 this.generateMelodies();
             },
             generateMelodies: function() {
-                console.log("fitness function", this.settings.fitnessFunction);
                 this.melodyFactory = new MelodyFactory(this.settings);
                 const melodies = this.melodyFactory.createMelodies();
                 this.noteStream = melodies.reduce((a, m) => a.concat(m), []);
-                console.log("this.noteStream", this.noteStream);
                 this.visualisationKey = Math.random(); // Horrible hack to refresh the visualisation
             },
-            start: function() {
-                this.playing = true;
-                webmidi.enable(err => {
-                    const output = webmidi.outputs[0];
-                    console.log(webmidi);
-                    this.streamInterval = setInterval(() => {
-                        if (
-                            this.currentNoteIndex >
-                            this.noteStream.length - 1
-                        ) {
-                            this.currentNoteIndex = 0;
-                        }
-
-                        this.currentNoteIndex++;
-                        const note = this.noteStream[this.currentNoteIndex];
-
-                        // If note isn't 0 and isn't the same as the previous note
-                        if (
-                            note !== 0 &&
-                            this.noteStream[this.currentNoteIndex - 1] &&
-                            note !== this.noteStream[this.currentNoteIndex - 1]
-                        ) {
-                            if (this.currentNote)
-                                output.stopNote(this.currentNote);
-                            this.currentNote = note;
-                            console.log("Playing", note);
-                            output.playNote(note);
-                        }
-                    }, 60000 / (this.tempo * this.notesPerBar));
-                });
-            },
-            stop: function() {
-                webmidi.disable();
-                clearInterval(this.streamInterval);
-                this.streamInterval = null;
-                this.playing = false;
-                this.currentNoteIndex = 0;
+            play: function(index) {
+                const note = this.noteStream[index];
+                // If note isn't 0 and isn't the same as the previous note
+                if (
+                    note !== 0 && // If note is ON
+                    (this.noteStream[index - 1] || // AND if there was a previous note it wasn't the same as this one
+                        note !== this.noteStream[index - 1])
+                ) {
+                    if (this.currentNote) output.stopNote(this.currentNote); // Stop the current note if there is one
+                    this.currentNote = note; // Reset the current note
+                    console.log("Playing", note);
+                    this.output.playNote(note);
+                }
             }
         }
     };
