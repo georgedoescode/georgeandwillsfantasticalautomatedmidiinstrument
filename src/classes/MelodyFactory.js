@@ -1,4 +1,5 @@
 import GeneticAlgorithm from "tournament-selection-genetic-algorithm";
+import utils from "../helpers/fitness-function-utils.js";
 
 export default class MelodyFactory {
     /**
@@ -29,7 +30,7 @@ export default class MelodyFactory {
         ga.demes = this.settings.demes;
         // Set the fitness function
         ga.fitness = g =>
-            this.settings.fitnessFunction(g, this.settings.scale);
+            this.settings.fitnessFunction(g, this.settings.scale, utils);
         // Run the genetic algorithm to produce the melodies
         ga.run(this.settings.populationCount, this.settings.generationCount);
         console.log('population', ga.population);

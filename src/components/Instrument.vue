@@ -66,7 +66,7 @@
             settings: function() {
                 return {
                     geneLength: 16, // Amount of notes in a melody
-                    geneValues: this.notes.concat([0]), // 'Notes' available
+                    geneValues: this.notes.concat([null]), // 'Notes' available (null being OFF note)
                     populationCount: 16, // How many melodies to create
                     generationCount: 100, // How much to breed (develop) them
                     fitnessFunction: this.fitnessFunction, // The creative bit
@@ -96,7 +96,7 @@
                 }
             },
             setNotes: function(e) {
-                this.notes = e.notes.map(n => Midi.toMidi(n));
+                this.notes = e.notes;
                 this.scale = e.scale;
                 this.generateMelodies();
             },
@@ -108,16 +108,16 @@
             },
             play: function(index) {
                 const note = this.noteStream[index];
+                if (note === null) return;
                 // If note isn't 0 and isn't the same as the previous note
                 if (
-                    note !== 0 && // If note is ON
-                    (this.noteStream[index - 1] || // AND if there was a previous note it wasn't the same as this one
-                        note !== this.noteStream[index - 1])
+                    this.noteStream[index - 1] || // AND if there was a previous note it wasn't the same as this one
+                    note !== this.noteStream[index - 1]
                 ) {
                     if (this.currentNote) output.stopNote(this.currentNote); // Stop the current note if there is one
                     this.currentNote = note; // Reset the current note
                     console.log("Playing", note);
-                    this.output.playNote(note);
+                    this.output.playNote(note.midi);
                 }
             }
         }
