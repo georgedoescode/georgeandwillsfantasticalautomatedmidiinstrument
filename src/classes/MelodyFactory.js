@@ -28,11 +28,10 @@ export default class MelodyFactory {
         // Set demes boolean in GA
         ga.demes = this.settings.demes;
         // Set the fitness function
-        ga.fitness = g =>
-            this.settings.fitnessFunction(g, this.settings.scale);
+        ga.fitness = g => this.settings.fitnessFunction(g, this.settings.scale);
         // Run the genetic algorithm to produce the melodies
         ga.run(this.settings.populationCount, this.settings.generationCount);
-        console.log('population', ga.population);
+        // console.log('population', ga.population);
         // Return the melodies
         return ga.population;
     }

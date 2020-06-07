@@ -12,22 +12,22 @@ export default class {
         const inputs = access.inputs.values();
         const availableInputs = [];
         for (const input of inputs) {
-            console.log(input)
-            availableInputs.push(input.name)
+            // console.log(input)
+            availableInputs.push(input.name);
             if (input.name === this.inputName) {
                 this.MIDIInput = input;
                 break;
             }
         }
         if (this.MIDIInput === null) {
-            console.warn('Please pick a MIDI bus', availableInputs);
+            console.warn("Please pick a MIDI bus", availableInputs);
         }
 
         this.MIDIInput.onmidimessage = e => this.onMIDIClockMessage(e);
     }
 
     onMIDIClockMessage(e) {
-        console.log('onMIDIClockMessage', e);
+        // console.log('onMIDIClockMessage', e);
         // "stop" message value is 252
         if (e.data[0] === 252) {
             this.store.commit("resetTransport");

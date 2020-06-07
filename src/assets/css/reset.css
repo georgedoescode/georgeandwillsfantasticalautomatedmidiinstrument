@@ -24,3 +24,8 @@ video {
     display: block;
     max-width: 100%;
 }
+
+body {
+    -webkit-font-smoothing: antialiased;
+    background: #f0f4f8;
+}

@@ -1,25 +1,30 @@
 <template>
-    <div>
-        <p>Instrument</p>
-        <div>
+    <div class="instrument">
+        <!-- <div class="viz">
             <MelodyVisualisation
                 v-if="!!noteStream.length"
                 :key="visualisationKey"
-                :height="200"
                 :melody="noteStream"
             />
+        </div> -->
+        <div class="instrument-header">
+            <h2 class="heading">Instrument</h2>
+            <button @click="generateMelodies" class="regenerate">
+                Regenerate
+            </button>
         </div>
-        <div>
-            <button @click="generateMelodies">Regenerate</button>
-        </div>
-        <div>
-            <p>{{ currentNoteLabel }}</p>
+        <div class="current-note">
+            <p>
+                Current note: <strong>{{ currentNoteLabel }}</strong>
+            </p>
         </div>
         <NoteCollection @update="setNotes" />
-        <codemirror
-            :value="fitnessFunctionString"
-            @input="updateFitnessFunction"
-        ></codemirror>
+        <div class="code">
+            <codemirror
+                :value="fitnessFunctionString"
+                @input="updateFitnessFunction"
+            ></codemirror>
+        </div>
     </div>
 </template>
 
@@ -75,13 +80,19 @@
             },
             conductor() {
                 return this.$store.state.transportPosition;
+            },
+            windowDimensions() {
+                return {
+                    w: window.innerWidth,
+                    h: window.innerHeight
+                };
             }
         },
         watch: {
             conductor(pulse) {
                 // midi clocks pulse 24x per quater note
                 if (pulse % 24 === 0) {
-                    console.log("quarter note niceeeee");
+                    // console.log("quarter note niceeeee");
                     this.play(pulse);
                 }
             }
@@ -114,9 +125,10 @@
                     (this.noteStream[index - 1] || // AND if there was a previous note it wasn't the same as this one
                         note !== this.noteStream[index - 1])
                 ) {
-                    if (this.currentNote) output.stopNote(this.currentNote); // Stop the current note if there is one
+                    if (this.currentNote)
+                        this.output.stopNote(this.currentNote); // Stop the current note if there is one
                     this.currentNote = note; // Reset the current note
-                    console.log("Playing", note);
+                    // console.log("Playing", note);
                     this.output.playNote(note);
                 }
             }
@@ -124,23 +136,74 @@
     };
 </script>
 
-<style>
-    body {
-        height: 100vh;
-        overflow: scroll;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: Avenir, system-ui;
-        color: #222;
-        padding: 1em;
+<style scoped>
+    .instrument {
+        position: relative;
+        max-width: 768px;
+        padding: 32px 24px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        margin: auto;
     }
 
-    p {
-        font-size: calc(1em + 1vw);
-        word-wrap: break-word;
-        width: 100%;
-        text-align: center;
-        margin: 1rem 0;
+    .instrument-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .instrument .heading {
+        position: relative;
+        color: #243b53;
+        letter-spacing: -0.05em;
+        margin-bottom: 32px;
+        padding-bottom: 16px;
+    }
+
+    .instrument .heading:before {
+        position: absolute;
+        content: "";
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 48px;
+        background: #f0f4f8;
+    }
+
+    .regenerate {
+        background: #102a43;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 2px solid #102a43;
+        color: #f0f4f8;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .regenerate:hover {
+        background: #fff;
+        border: 2px solid #102a43;
+        color: #102a43;
+    }
+
+    .current-note {
+        margin-bottom: 32px;
+    }
+</style>
+
+<style>
+    .CodeMirror-gutters {
+        background: #fff;
+        border-right: 1px solid #f0f4f8;
+    }
+
+    .CodeMirror-linenumber {
+        color: #829ab1;
+    }
+
+    .CodeMirror {
+        color: #102a43;
     }
 </style>

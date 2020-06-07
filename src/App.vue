@@ -1,9 +1,11 @@
 <template>
-    <div>
+    <div id="app">
+        <header>
+            <p class="transport">
+                {{ "Transport position: " + conductor }}
+            </p>
+        </header>
         <Instrument :output="this.outputs[0]" />
-        <p>
-            {{ "Transport position: " + conductor }}
-        </p>
     </div>
 </template>
 
@@ -28,7 +30,7 @@
         },
         beforeCreate() {
             this.transport = new Transport(this.$store, "GAWFAMI IAC Bus 1");
-            console.log("this.transport", this.transport);
+            // console.log("this.transport", this.transport);
             webmidi.enable(err => {
                 this.outputs = webmidi.outputs;
             });
@@ -36,30 +38,31 @@
     };
 </script>
 
-<style>
-    body {
+<style scoped>
+    #app {
         height: 100vh;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: flex-start;
+        font-family: system-ui;
+        color: #243b53;
+    }
+
+    header {
+        display: flex;
         align-items: center;
-        font-family: Avenir, system-ui;
-        color: #222;
-        padding: 1em;
-    }
-
-    p {
-        font-size: calc(1em + 1vw);
-        word-wrap: break-word;
         width: 100%;
-        text-align: center;
-        margin: 1rem 0;
+        background: #fff;
+        height: 64px;
+        padding: 0 24px;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        flex-shrink: 0;
+        margin-bottom: 32px;
     }
 
-    button {
-        display: block;
-        margin: 10px auto;
-        padding: 4px 6px;
-        border: 1px solid rgba(60, 60, 60, 0.26);
-        border-radius: 4px;
+    .transport {
+        line-height: 1;
+        color: #627d98;
+        font-size: 14px;
     }
 </style>

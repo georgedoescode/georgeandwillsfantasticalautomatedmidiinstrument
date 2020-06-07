@@ -68,8 +68,8 @@
             }
         },
         mounted() {
-            console.log("this.melody", this.melody);
-            console.log(this.chartData);
+            // console.log("this.melody", this.melody);
+            // console.log(this.chartData);
             this.render();
         },
         methods: {

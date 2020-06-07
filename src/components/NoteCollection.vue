@@ -1,17 +1,19 @@
 <template>
-    <div>
-        <p>Note Collection</p>
-        <div>
-            <span>Scale:</span>
-            <v-select label="scale" :options="scales" v-model="scaleName" />
-        </div>
-        <div>
-            <span>Base note:</span>
-            <v-select
-                label="base note"
-                :options="allNotes"
-                v-model="baseNote"
-            />
+    <div class="note-collection">
+        <h3>Note Collection</h3>
+        <div class="selectors">
+            <div>
+                <span class="selector-label">Base note:</span>
+                <v-select
+                    label="base note"
+                    :options="allNotes"
+                    v-model="baseNote"
+                />
+            </div>
+            <div>
+                <span class="selector-label">Scale:</span>
+                <v-select label="scale" :options="scales" v-model="scaleName" />
+            </div>
         </div>
     </div>
 </template>
@@ -45,7 +47,7 @@
                 for (let i = 0; i < this.octaveCount; i++) {
                     notes = notes.concat(
                         this.scale.notes.map(n => {
-                            console.log(Note.get(n));
+                            // console.log(Note.get(n));
                             let note = Note.transpose(
                                 n,
                                 Interval.fromSemitones(i * 12)
@@ -55,7 +57,7 @@
                         })
                     );
                 }
-                console.log("notes", notes);
+                // console.log("notes", notes);
                 return notes;
             },
             scales: function() {
@@ -67,11 +69,39 @@
         },
         methods: {
             emitUpdate: function() {
-                console.log("emitUpdate", this.notes);
+                // console.log("emitUpdate", this.notes);
                 this.$emit("update", { notes: this.notes, scale: this.scale });
             }
         }
     };
 </script>
 
-<style></style>
+<style scoped>
+    h3 {
+        margin-bottom: 16px;
+    }
+    .selectors {
+        display: flex;
+        margin-bottom: 32px;
+    }
+
+    .selectors > div {
+        width: 50%;
+    }
+
+    .selector-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #486581;
+    }
+
+    .selectors > div:first-child {
+        margin-right: 16px;
+    }
+</style>
+
+<style>
+    .vs__dropdown-toggle {
+        border: 1px solid #d9e2ec !important;
+    }
+</style>

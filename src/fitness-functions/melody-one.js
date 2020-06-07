@@ -1,14 +1,14 @@
 // Melody example (melody)  : [86, 72, 93, 72, 74, 0, 88, 0, 81, 88, 84, 81, 72, 74, 93, 93]
 // Scale example (scale)    : [72, 74, 76, 79, 81, 84, 86, 88, 91, 93, 0]
 
-/** 
+/**
  * Assess the melody passed into the function by
  * building up a score based on certain aspects
  * of the melody and returning this score for the
  * melodytic algorithm to use to breed 'better' melodies.
  */
 export default (melody, scale) => {
-    console.log(melody, scale); // TODO this is broken and changed now but better using actual scale object!
+    // console.log(melody, scale); // TODO this is broken and changed now but better using actual scale object!
     let score = 0; // Initialise score variable
 
     if (melody[0] !== 0) score++; // If the first note in the melody is an 'on' note then +1
