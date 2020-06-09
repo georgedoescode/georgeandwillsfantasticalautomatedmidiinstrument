@@ -127,7 +127,7 @@
                     note !== this.noteStream[index - 1]
                 ) {
                     if (this.currentNote)
-                        this.output.stopNote(this.currentNote); // Stop the current note if there is one
+                        this.output.stopNote(this.currentNote.midi); // Stop the current note if there is one
                     this.currentNote = note; // Reset the current note
                     console.log("Playing", note);
                     this.output.playNote(note.midi);
