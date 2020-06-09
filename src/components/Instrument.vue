@@ -118,6 +118,7 @@
                 this.visualisationKey = Math.random(); // Horrible hack to refresh the visualisation
             },
             play: function(index) {
+                console.log("play this.noteStream", this.noteStream);
                 const note = this.noteStream[index];
                 if (note === null) return;
                 // If note isn't 0 and isn't the same as the previous note
