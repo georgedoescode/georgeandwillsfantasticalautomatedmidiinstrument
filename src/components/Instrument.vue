@@ -62,7 +62,7 @@ export default {
             return this.fitnessFunction.toString();
         },
         currentNoteLabel: function() {
-            return this.currentNote.name;
+            return this.currentNote ? this.currentNote.name : "";
         },
         settings: function() {
             return {
