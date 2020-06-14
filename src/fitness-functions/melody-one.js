@@ -27,7 +27,7 @@ export default (melody, scale, utils) => {
     if (
         melody[melody.length - 1] &&
         utils.getDistance(baseNote, melody[melody.length - 1].name).interval ===
-            "P"
+        "P"
     )
         score++;
 
@@ -42,12 +42,36 @@ export default (melody, scale, utils) => {
     // If notes that are between the 1st, 5th, 9th etc. notes are a major note
     melody.map((note, index) => {
         if (note && index % 4 !== 0) {
+            if (utils.getDistance(baseNote, note.name).interval === "m")
+                score++;
+        }
+    });
+
+    // If notes that are between the 1st, 5th, 9th etc. notes are a major note
+    melody.map((note, index) => {
+        if (note && index % 3 === 0) {
             if (utils.getDistance(baseNote, note.name).interval === "M")
                 score++;
         }
     });
 
-    const idealZeroCount = 6; // If the count of 'off' notes is closer to 8 then increase the score
+    // If there are strings of successive notes in the melody (with a max of 3 for example) then score this higher
+    const consecutiveCountThreshold = 2;
+    let consecutiveCount = 0;
+    for (let i in melody) {
+        if (i > 0) {
+            if (melody[i] === melody[i - 1]) {
+                consecutiveCount++;
+            } else {
+                consecutiveCount = 0;
+            }
+            if (consecutiveCount > 0 && consecutiveCount < consecutiveCountThreshold) {
+                score++;
+            }
+        }
+    }
+
+    const idealZeroCount = 4; // If the count of 'off' notes is closer to 8 then increase the score
     const zeroCount = melody.reduce((a, v) => a + (v === null ? 1 : 0), 0);
     score -= Math.abs(idealZeroCount - zeroCount);
 
