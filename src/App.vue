@@ -1,11 +1,35 @@
 <template>
     <div id="app">
         <header>
-            <p class="transport">
-                {{ "Transport position: " + conductor }}
-            </p>
+            <div class="midi-clock">
+                <p class="transport">
+                    {{ "CLOCK: " + conductor }}
+                </p>
+                <div class="midi-opts">
+                    <div>
+                        <span>CLOCK input</span>
+                        <v-select
+                            label="name"
+                            :options="inputs"
+                            v-model="selectedInput"
+                            @input="handleInputChange"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="midi-opts">
+                <div>
+                    <span>MIDI output</span>
+                    <v-select
+                        label="name"
+                        :options="outputs"
+                        v-model="selectedOutput"
+                        @input="handleOutputChange"
+                    />
+                </div>
+            </div>
         </header>
-        <Instrument :output="this.outputs[0]" />
+        <Instrument :output="selectedOutput" />
     </div>
 </template>
 
@@ -17,7 +41,11 @@
     export default {
         data: function() {
             return {
-                outputs: []
+                inputs: [],
+                outputs: [],
+                selectedInput: null,
+                selectedOutput: null,
+                transport: null
             };
         },
         components: {
@@ -28,11 +56,23 @@
                 return this.$store.state.transportPosition;
             }
         },
+        methods: {
+            handleInputChange(e) {
+                this.selectedInput = e;
+                this.transportPosition.setInput(this.selectedInput);
+            },
+            handleOutputChange(e) {
+                this.selectedOutput = e;
+            }
+        },
         beforeCreate() {
-            this.transport = new Transport(this.$store, "GAWFAMI IAC Bus 1");
-            // console.log("this.transport", this.transport);
             webmidi.enable(err => {
+                this.inputs = webmidi.inputs;
                 this.outputs = webmidi.outputs;
+                this.selectedOutput = this.outputs[0];
+                this.selectedInput = this.inputs[0];
+
+                this.transport = new Transport(this.$store, this.selectedInput);
             });
         }
     };
@@ -53,8 +93,7 @@
         align-items: center;
         width: 100%;
         background: #fff;
-        height: 64px;
-        padding: 0 24px;
+        padding: 12px 24px;
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         flex-shrink: 0;
         margin-bottom: 32px;
@@ -63,6 +102,31 @@
     .transport {
         line-height: 1;
         color: #627d98;
-        font-size: 14px;
+        font-size: 12px;
+        width: 96px;
+        /* margin-left: 16px; */
+    }
+
+    .midi-clock {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .midi-opts {
+        display: flex;
+        margin-left: auto;
+    }
+
+    .midi-opts > div {
+        flex-shrink: 0;
+        margin-left: 16px;
+        min-width: 256px;
+    }
+
+    .midi-opts > div > span {
+        font-size: 12px;
+        margin-bottom: 8px;
+        display: block;
     }
 </style>

@@ -1,41 +1,34 @@
 export default class {
-    constructor(store, inputName) {
+    constructor(store, input) {
         this.store = store;
-        this.MIDIInput = null;
-        this.inputName = inputName;
+        this.availableInputs = [];
 
+        this.setInput(input);
         this.setup();
     }
 
     async setup() {
         const access = await navigator.requestMIDIAccess();
         const inputs = access.inputs.values();
-        const availableInputs = [];
+
         for (const input of inputs) {
-            // console.log(input)
-            availableInputs.push(input.name);
-            if (input.name === this.inputName) {
-                this.MIDIInput = input;
-                break;
-            }
-        }
-        if (this.MIDIInput === null) {
-            console.warn("Please pick a MIDI bus", availableInputs);
+            this.availableInputs.push(input);
         }
 
-        this.MIDIInput.onmidimessage = e => this.onMIDIClockMessage(e);
+        if (this.MIDIInput === null) {
+            console.warn("Please pick a MIDI bus", this.availableInputs);
+        }
+
+        this.MIDIInput.addListener("clock", "all", e => {
+            this.store.commit("progressTransport");
+        });
+
+        this.MIDIInput.addListener("stop", "all", e => {
+            this.store.commit("resetTransport");
+        });
     }
 
-    onMIDIClockMessage(e) {
-        // console.log('onMIDIClockMessage', e);
-        // "stop" message value is 252
-        if (e.data[0] === 252) {
-            this.store.commit("resetTransport");
-        }
-
-        // "clock" message value is 248
-        if (e.data[0] === 248) {
-            this.store.commit("progressTransport");
-        }
+    setInput(input) {
+        this.MIDIInput = input;
     }
 }
