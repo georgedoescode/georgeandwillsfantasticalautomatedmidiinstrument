@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@tonaljs/tonal": "^3.6.0",
-        "chart.js": "^2.9.3",
+        "chart.js": "^2.9.4",
         "normalize.css": "^8.0.1",
         "tournament-selection-genetic-algorithm": "^0.2.2",
         "vue": "^2.6.11",
